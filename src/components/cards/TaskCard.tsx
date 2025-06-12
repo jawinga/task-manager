@@ -4,6 +4,7 @@ import type { Project } from '../../models/Project';
 import type { User } from '../../models/User';
 import UserProfiles from '../small-elements/UserProfiles';
 import Request from '../buttons/Request';
+import DropTaskState from '../small-elements/DropTaskState';
 
 
 
@@ -13,15 +14,22 @@ interface TaskCardProps{
     project: Project;
     participants: User[];
     isAssignedToMe: boolean;
-    
+ 
 }
 
 
 
 const TaskCard = ({task, project, participants, isAssignedToMe}:TaskCardProps) => {
 
+const [state, setState] = React.useState<Task>(task);
+
+  React.useEffect(()=>{
+
+    setState(task);
 
 
+  }, [state])
+  
   return (
   <div className={`task-card ${isAssignedToMe ? 'task-card--assigned' : ''}`}>
   <div className="task-card__left">
@@ -48,10 +56,18 @@ const TaskCard = ({task, project, participants, isAssignedToMe}:TaskCardProps) =
         <p className="task-card__status">
 
 
-          {task.status === "not-started" && <span className='card-status card-status--not-started'>Not started</span>}
-          {task.status === "in-progress" && <span className='card-status card-status--in-progress'>In progress</span>}
-          {task.status === "completed" && <span className='card-status card-status--completed'>Completed</span>}
-          {task.status === "stuck" && <span className='card-status card-status--stuck'>Stuck</span>}
+          {isAssignedToMe ? (
+             <DropTaskState setState={setState} state={state} />
+            ) : (
+                <>
+                 {task.status === "not-started" && <span className='card-status card-status--not-started'>Not started</span>}
+                 {task.status === "in-progress" && <span className='card-status card-status--in-progress'>In progress</span>}
+                   {task.status === "completed" && <span className='card-status card-status--completed'>Completed</span>}
+                    {task.status === "stuck" && <span className='card-status card-status--stuck'>Stuck</span>}
+                </>
+          )}    
+
+         
           {isAssignedToMe?"": <Request task={task}></Request>}
           
           

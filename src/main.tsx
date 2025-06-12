@@ -12,6 +12,7 @@ import Goals from './pages/Goals.tsx'
 import Profile from './pages/Profile.tsx'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { UserProvider } from './contexts/UserContext.tsx'
+import { AppDataProvider } from './contexts/AppDataContext.tsx'
 
 
 
@@ -28,8 +29,11 @@ const router = createBrowserRouter([
   
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <UserProvider>
+    <AppDataProvider>
+        <UserProvider>
           <RouterProvider router={router} />
-    </UserProvider>
+      </UserProvider>
+    </AppDataProvider>
+  
   </StrictMode>,
 )

@@ -4,8 +4,17 @@ import navBackground from '../assets/background-images/nav_background.png';
 import { SearchBar } from './small-elements/SearchBar';
 import { Cta } from './buttons/Cta';
 import { Languages } from './buttons/Languages';
+import { useAppData } from '../contexts/AppDataContext';
 
-export const Navbar = () => {
+interface NavBarProps{
+
+  isOpen:boolean;
+  isOpenFunct: ()=>void;
+
+}
+
+export const Navbar = ({isOpen, isOpenFunct}:NavBarProps) => {
+  const {projects, users, tasks} = useAppData();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -15,6 +24,9 @@ export const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  
+
 
   return (
     <nav
@@ -87,7 +99,7 @@ export const Navbar = () => {
             </li>
 
             <li className="nav__item">
-              <Cta />
+              <Cta isOpen={isOpen} isOpenFunct={isOpenFunct} />
             </li>
 
             <li className="nav__item">

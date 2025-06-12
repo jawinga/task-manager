@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useAppData } from '../contexts/AppDataContext';
 import '../styles/main.scss';
 import Sidebar from '../components/Sidebar';
 import {Navbar} from '../components/Navbar';
@@ -14,23 +15,28 @@ import { filter } from 'framer-motion/client';
 import Dropdown from '../components/small-elements/Dropdown';
 import YourTasks from '../components/small-elements/YourTasks';
 import SortDropdown from '../components/small-elements/SortDropdown';
+import DropTaskState from '../components/small-elements/DropTaskState';
+import Modal from '../components/small-elements/Modal';
 
 interface FilterProps{
-
   tasks: Task[];
-
 }
 
 
 function Tasks() {
 
-  const [tasks, setTasks] = React.useState<Task[]>(mockTasks);
-  const [filter, setFilter] = React.useState<string>('all');
-  const [sort, setSort] = React.useState<string>('any');
-  
+const { tasks, projects, users } = useAppData();
+console.log('Tasks from context:', tasks);
+const [filter, setFilter] = React.useState<string>('all');
+const [sort, setSort] = React.useState<string>('any');
 
-  const projects = mockProjects;
-  const users = mockUsers;
+const [isOpen, setIsOpen] = React.useState(false)
+
+ function isOpenFunct(){
+    setIsOpen(prev => !prev);
+  }
+
+
 
 const visibleTasks = useMemo(() => {
   const filtered = filter === 'all'
@@ -43,17 +49,17 @@ const visibleTasks = useMemo(() => {
     );
   }
 
+
+
   if (sort === 'priority') {
-   /* const priorityOrder = { low: 1, medium: 2, high: 3 };
-    return [...filtered].sort(
-      (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]
-    );*/
+   
   }
 
   return filtered;
 }, [tasks, filter, sort]);
 
-
+console.log(visibleTasks.length);
+console.log('Modal open state:', isOpen);
 
 
 
@@ -61,7 +67,7 @@ const visibleTasks = useMemo(() => {
     <div> 
 
 
-          <Navbar />
+          <Navbar isOpen={isOpen} isOpenFunct={isOpenFunct} />
 
       <div className='layout'>
 
@@ -93,23 +99,6 @@ const visibleTasks = useMemo(() => {
 
 <Filter tasks={visibleTasks} projects={projects} users={users} />
 
-    {/*{tasks.map((task) => {
-  const project = projects.find(p => p.id === task.projectId);
-  const participants = users.filter(u => (task.assignedTo || []).includes(u.id)
-);
-
-  // optional check in case project isn't found
-  if (!project) return null;
-
-  return (
-    <TaskCard
-      key={task.id}
-      task={task}
-      project={project}
-      participants={participants}
-    />
-  );
-})}*/}
 
   
   </div>
@@ -117,6 +106,10 @@ const visibleTasks = useMemo(() => {
 
 
       </div>
+
+        {isOpen && <Modal isOpen={isOpen} isOpenFunct={isOpenFunct} />}
+
+
         </div>
 
       

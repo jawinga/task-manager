@@ -1,0 +1,564 @@
+.modal-wrapper {
+  position: relative;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.4) 0%, 
+    rgba(26, 26, 46, 0.6) 50%, 
+    rgba(15, 52, 96, 0.4) 100%
+  );
+  backdrop-filter: blur(8px);
+  animation: overlayFadeIn 0.3s ease-out;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  animation: containerSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes containerSlideIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-panel {
+  width: 100%;
+  max-width: 520px;
+  min-height: min-content;
+  max-height: none;
+  margin: auto 0;
+  background: linear-gradient(135deg, 
+    rgba(26, 26, 46, 0.95) 0%, 
+    rgba(22, 33, 62, 0.95) 50%, 
+    rgba(15, 52, 96, 0.95) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 8px 32px rgba(111, 2, 161, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #e5e7eb;
+  position: relative;
+  overflow: visible;
+
+  // Animated background pattern
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(111, 2, 161, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  // All content positioned relative to background
+  > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  // Scoped label styling - ONLY within modal
+  label {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #d1d5db;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+
+  // Scoped form inputs - ONLY within modal
+  input[type="text"],
+  input[type="date"],
+  textarea,
+  select {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    color: #ffffff;
+    font-family: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 0.75rem;
+    backdrop-filter: blur(10px);
+
+    &::placeholder {
+      color: #9ca3af;
+      opacity: 0.8;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #8A2BE2;
+      background: rgba(0, 0, 0, 0.4);
+      box-shadow: 
+        0 0 0 3px rgba(138, 43, 226, 0.2),
+        0 4px 12px rgba(138, 43, 226, 0.1);
+      transform: translateY(-2px);
+
+      &::placeholder {
+        color: rgba(138, 43, 226, 0.6);
+      }
+    }
+
+    &:hover:not(:focus) {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    // Form validation styles - ONLY within modal
+    &:invalid {
+      border-color: rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+    }
+
+    &:valid {
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+  }
+
+  // Scoped textarea styling - ONLY within modal
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  // Scoped select styling - ONLY within modal
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5e7eb' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 3rem;
+    appearance: none;
+
+    option {
+      background: #1a1a2e;
+      color: #e5e7eb;
+      padding: 0.5rem;
+    }
+  }
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  &::before {
+    content: '✨';
+    font-size: 1.25rem;
+  }
+}
+
+.modal-description {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// Multi-select specific styling using IDs
+#participants-select {
+  min-height: 120px;
+  max-height: 180px;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  overflow-y: auto;
+  cursor: pointer;
+
+  // Remove default select styling
+  background-image: none;
+  padding-right: 1rem;
+  appearance: none;
+
+  &:focus {
+    outline: none;
+    border-color: #8A2BE2;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 
+      0 0 0 3px rgba(138, 43, 226, 0.2),
+      0 4px 12px rgba(138, 43, 226, 0.1);
+    transform: translateY(-2px);
+  }
+
+  &:hover:not(:focus) {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  // Custom scrollbar for multi-select
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #8A2BE2, #6F02A1);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #9B4DE3, #7C12B0);
+  }
+
+  // Option styling for multi-select
+  option {
+    background: rgba(26, 26, 46, 0.95);
+    color: #e5e7eb;
+    padding: 0.75rem 1rem;
+    margin: 2px 0;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+
+    &:hover {
+      background: linear-gradient(135deg, 
+        rgba(111, 2, 161, 0.3), 
+        rgba(138, 43, 226, 0.3)
+      );
+      color: #ffffff;
+      border-color: rgba(138, 43, 226, 0.4);
+    }
+
+    &:checked,
+    &:selected {
+      background: linear-gradient(135deg, 
+        rgba(111, 2, 161, 0.6), 
+        rgba(138, 43, 226, 0.6)
+      );
+      color: #ffffff;
+      border-color: rgba(138, 43, 226, 0.6);
+      font-weight: 600;
+      position: relative;
+
+      &::before {
+        content: '✓ ';
+        color: #ffffff;
+        font-weight: bold;
+      }
+    }
+
+    &:focus {
+      outline: none;
+      background: linear-gradient(135deg, 
+        rgba(111, 2, 161, 0.4), 
+        rgba(138, 43, 226, 0.4)
+      );
+      border-color: rgba(138, 43, 226, 0.5);
+    }
+  }
+}
+
+// Add a helper text for the multi-select
+#participants-field {
+  position: relative;
+  
+  &::after {
+    content: '👥 Multiple selections allowed';
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-style: italic;
+  }
+}
+
+// Selected items count badge
+#participants-select:focus::before {
+  content: attr(data-selected-count) ' selected';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: linear-gradient(135deg, #8A2BE2, #6F02A1);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  z-index: 10;
+}
+
+// Add icons to specific labels
+#title-label::before { content: '📝 '; }
+#description-label::before { content: '📄 '; }
+#project-label::before { content: '📁 '; }
+#date-label::before { content: '📅 '; }
+#participants-label::before { content: '👥 '; }
+#priority-label::before { content: '⚡ '; }
+
+// Priority select specific styling
+#priority-select {
+  option[value="Low"] {
+    color: #10B981;
+  }
+
+  option[value="Medium"] {
+    color: #F59E0B;
+  }
+
+  option[value="High"] {
+    color: #EF4444;
+  }
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-button {
+  background: linear-gradient(135deg, #8A2BE2 0%, #6F02A1 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.75rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 12px rgba(138, 43, 226, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+
+  // Shine effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.7s ease-in-out;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #9B4DE3 0%, #7C12B0 100%);
+    box-shadow: 
+      0 6px 16px rgba(138, 43, 226, 0.4),
+      0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 
+      0 2px 6px rgba(138, 43, 226, 0.2),
+      0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 
+      0 0 0 3px rgba(138, 43, 226, 0.3),
+      0 6px 16px rgba(138, 43, 226, 0.4);
+  }
+}
+
+// Loading state for the button
+.modal-button--loading {
+  pointer-events: none;
+  opacity: 0.8;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// Close button if you want to add one
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(0, 0, 0, 0.2);
+  color: #9ca3af;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 3;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    transform: scale(1.1);
+  }
+}
+
+// Custom scrollbar for the modal container
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #8A2BE2, #6F02A1);
+  border-radius: 4px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #9B4DE3, #7C12B0);
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .modal-container {
+    padding: 1rem;
+  }
+
+  .modal-panel {
+    padding: 1.5rem;
+
+    input[type="text"],
+    input[type="date"],
+    textarea,
+    select {
+      padding: 0.625rem 0.875rem;
+      font-size: 0.85rem;
+    }
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modal-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  #participants-select {
+    min-height: 100px;
+    max-height: 150px;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-panel {
+    padding: 1rem;
+  }
+}
+
+// Ensure modal is scrollable on small screens
+@media (max-height: 600px) {
+  .modal-container {
+    align-items: flex-start;
+    padding: 1rem;
+  }
+  
+  .modal-panel {
+    margin: 0;
+  }
+}

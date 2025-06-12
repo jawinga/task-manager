@@ -12,6 +12,8 @@ interface FilterProps {
 }
 
 const Filter = ({ tasks, projects, users }: FilterProps) => {
+
+  console.log(tasks);  
   return (
     <div>
       {tasks.map((task) => {

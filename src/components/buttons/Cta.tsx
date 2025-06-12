@@ -1,6 +1,13 @@
 import React from 'react'
 
-export const Cta  = () => {
+interface buttonProps{
+
+  isOpen:boolean;
+  isOpenFunct: ()=>void;
+
+}
+
+export const Cta  = ({isOpen, isOpenFunct}:buttonProps) => {
 
     const [isActive, setIsActive] = React.useState(false);
 
@@ -8,14 +15,11 @@ export const Cta  = () => {
 
         setIsActive((prev) => !prev);
         console.log(`Clicked!, ${ isActive}`);
+        isOpenFunct();
     }
 
 
   return (
-<div className="container">
-      <button onClick={handleClick} className="cta">
-        Add task
-        <div className="cta__state">{isActive ? "-" : "+"}</div>
-      </button>
-    </div>  )
+    <button onClick={handleClick} className='cta'>Add task <div className='cta__state'>{isActive? "-" : "+"}</div></button>
+  )
 }
