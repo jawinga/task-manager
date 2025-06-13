@@ -29,8 +29,9 @@ const { tasks, projects, users } = useAppData();
 console.log('Tasks from context:', tasks);
 const [filter, setFilter] = React.useState<string>('all');
 const [sort, setSort] = React.useState<string>('any');
+const [isOpen, setIsOpen] = React.useState(false);
+const [selectedUsers, setSelectedUsers] = React.useState<User[]>([]);
 
-const [isOpen, setIsOpen] = React.useState(false)
 
  function isOpenFunct(){
     setIsOpen(prev => !prev);
