@@ -4,16 +4,21 @@ import { useState, useEffect } from 'react'
 import { useAppData } from '../../contexts/AppDataContext'
 import type { User } from '../../models/User'
 import type { Task } from '../../models/Task'
+import { s } from 'framer-motion/client'
 
 
 interface ModalProps {
   isOpen: boolean;
   isOpenFunct: ()=>void;
+  isTaskCreatedModal: boolean;
+  setIsTaskCreatedModal?: (value: boolean) => void;
+  setCreatedTask: (task: Task)=>void
+
 }
 
 
 
-const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
+const Modal = ({isOpen, isOpenFunct, isTaskCreatedModal, setIsTaskCreatedModal, setCreatedTask}:ModalProps) => {
 
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [formData, setFormData] = useState<Task>({
@@ -35,7 +40,7 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
 });
   const [formError, setFormError] = useState<string | null>(null);
 
-  const { tasks, projects, users } = useAppData();
+  const { tasks, projects, users, setTasks } = useAppData();
 
   useMemo(()=>{
   console.log('Selected count:', selectedUsers.length);
@@ -56,9 +61,21 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
                setFormError(`"${field}" is required`);
                return;
            }
-           
+
       values[field] = value.toString();
     }
+
+  type Priority = "low" | "medium" | "high" | "critical";
+
+  const isValidPriority = (value: string): value is Priority => {
+    return ["low", "medium", "high", "critical"].includes(value);
+  };
+
+  const rawPriority = values["priority"];
+  if (!isValidPriority(rawPriority)) {
+    setFormError("Invalid priority selected");
+    return;
+  }
 
     const participants = selectedUsers.map(user => user.id);
 
@@ -68,15 +85,53 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
       description: values.description,
       projectId: projects.find(p => p.name === values.project)?.id || 0,
       dueDate: values.date,
-      priority: values.priority,
+      priority: rawPriority,
       assignedTo: participants,
       status: 'not-started',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      completed: false,
+      pinned: false,
+      access: 'private',
+
     };
 
-    console.log("✅ New task created:", newTask);
-    isOpenFunct(); // Close modal
+    try{
+
+      console.log("New task created:", newTask);
+    setFormData(newTask);
+    const updatedTasks = [...tasks, newTask];
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    const tasksList = JSON.parse(localStorage.getItem('tasks') || '[]') as Task[];
+    console.log(tasksList);
+
+    setFormData({
+      id: Date.now(), 
+      projectId: 0,
+      title: '',
+      description: '',
+      status: 'not-started',
+      assignedTo: [],
+      dueDate: '',
+      priority: 'low',
+      categories: [],
+      completed: false,
+      pinned: false,
+      access: 'private',
+      privateAttachments: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+
+        setCreatedTask(newTask);
+        setIsTaskCreatedModal?.(true); // ✅ use the prop from interface
+        isOpenFunct();
+    }catch (error) {
+      console.error("Error creating task:", error);
+      setFormError("Failed to create task. Please try again.");
+    }
+    
   };
 
   
@@ -90,7 +145,7 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
         Create Task
       </DialogTitle>
 
-      <form action={handleSubmit}>
+      <form onSubmit={handleSubmit}>
 
       <Field>
         <Label id="title-label" className="modal-description">Add a title</Label>
@@ -104,7 +159,7 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
 
       <Field>
         <Label id="project-label">Add to Project - {projects.length}</Label>
-        <Select id="project-select" required>
+        <Select id="project-select" required name='project'>
           <option value="">--Please choose an option--</option>
           {projects.map((project)=>{
             return(
@@ -116,7 +171,7 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
 
       <Field>
         <Label id="date-label">Select due date</Label>
-        <Input id="date-input" type='date' required />
+        <Input id="date-input" type='date' name='date' required />
       </Field>
 
       <Field id="participants-field">
@@ -124,6 +179,7 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
         <Select 
           id="participants-select" 
           multiple={true}
+          name='participants'
           onChange={(e) => {
           const selectedIds = Array.from(e.target.selectedOptions).map(option => option.value);
           const selectedUser = users.filter(user=>selectedIds.includes(user.id))
@@ -140,7 +196,7 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
 
       <Field>
         <Label id="priority-label">Add priority</Label>
-        <Select id="priority-select" required>
+        <Select id="priority-select" name='priority' required>
             <option value="">--Please choose an option--</option>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -152,7 +208,7 @@ const Modal = ({isOpen, isOpenFunct}:ModalProps) => {
       </Field>
 
       <div className="modal-actions">
-        <Button id="submit-button" className="modal-button" onClick={isOpenFunct}>
+        <Button id="submit-button" className="modal-button" type="submit">
           Add task
         </Button>
       </div>

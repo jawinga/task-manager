@@ -1,5 +1,5 @@
 import React from 'react'
-import type { ReactNode } from 'react'
+import type { ReactNode, Dispatch, SetStateAction } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { mockProjects } from '../mock/mockProjects'
 import { mockTasks } from '../mock/mockTasks'
@@ -13,6 +13,8 @@ interface AppDataContextType {
   projects: Project[];
   tasks: Task[];
   users: User[];
+  setTasks: Dispatch<SetStateAction<Task[]>>
+
 }
 
 
@@ -24,6 +26,8 @@ const AppDataContext = createContext<AppDataContextType>({
   projects: [],
   tasks: [],
   users: [],
+  setTasks: () => {}, 
+  
 });
 
 
@@ -58,7 +62,7 @@ const [users, setUsers] = useState<User[]>([]);
   }, [])
 
   return (
-    <AppDataContext.Provider value={{ projects, tasks, users }}>
+    <AppDataContext.Provider value={{ projects, tasks, users, setTasks}}> 
       {children}
     </AppDataContext.Provider>
   );
