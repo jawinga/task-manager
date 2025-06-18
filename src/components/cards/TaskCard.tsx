@@ -28,7 +28,7 @@ const [state, setState] = React.useState<Task>(task);
     setState(task);
 
 
-  }, [state])
+  }, [task])
   
   return (
   <div className={`task-card ${isAssignedToMe ? 'task-card--assigned' : ''}`}>
