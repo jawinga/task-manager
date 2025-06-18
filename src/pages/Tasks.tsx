@@ -35,7 +35,9 @@ const [selectedUsers, setSelectedUsers] = React.useState<User[]>([]);
 const [isTaskCreatedModal, setIsTaskCreatedModal] = React.useState(false);
 const [createdTask, setCreatedTask] = React.useState<Task | null>(null);
 
-
+function closeModal() {
+  setIsOpen(false);
+}
 
  function isOpenFunct(){
     setIsOpen(prev => !prev);
@@ -115,7 +117,12 @@ console.log('Modal open state:', isOpen);
 
       </div>
 
-        {isOpen && <Modal isOpen={isOpen} isOpenFunct={isOpenFunct} isTaskCreatedModal={isTaskCreatedModal} setIsTaskCreatedModal={setIsTaskCreatedModal} setCreatedTask={setCreatedTask}/>}
+        {isOpen && <Modal  isOpen={isOpen}
+           isOpenFunct={closeModal}
+           isTaskCreatedModal={isTaskCreatedModal}
+           setIsTaskCreatedModal={setIsTaskCreatedModal}
+           setCreatedTask={setCreatedTask} 
+        />}
         {isTaskCreatedModal && <TaskCreated isTaskCreatedModal={isTaskCreatedModal} setIsTaskCreatedModal={setIsTaskCreatedModal} task={createdTask} ></TaskCreated>}
 
       </div>

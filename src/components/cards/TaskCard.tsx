@@ -5,6 +5,9 @@ import type { User } from '../../models/User';
 import UserProfiles from '../small-elements/UserProfiles';
 import Request from '../buttons/Request';
 import DropTaskState from '../small-elements/DropTaskState';
+import DeleteBtn from '../small-elements/DeleteBtn';
+import Tasks from '../../pages/Tasks';
+import { useAppData } from '../../contexts/AppDataContext';
 
 
 
@@ -21,14 +24,17 @@ interface TaskCardProps{
 
 const TaskCard = ({task, project, participants, isAssignedToMe}:TaskCardProps) => {
 
+  const { tasks, setTasks } = useAppData();
+
 const [state, setState] = React.useState<Task>(task);
 
   React.useEffect(()=>{
 
     setState(task);
 
-
   }, [task])
+
+
   
   return (
   <div className={`task-card ${isAssignedToMe ? 'task-card--assigned' : ''}`}>
@@ -69,6 +75,7 @@ const [state, setState] = React.useState<Task>(task);
 
          
           {isAssignedToMe?"": <Request task={task}></Request>}
+          {isAssignedToMe? <DeleteBtn taskId={task.id}></DeleteBtn>: ""}
           
           
           </p>

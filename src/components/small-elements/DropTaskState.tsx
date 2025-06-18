@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Task } from '../../models/Task';
+import { useAppData } from '../../contexts/AppDataContext';
 import {
   Listbox,
   ListboxButton,
@@ -20,13 +21,26 @@ const statusoptions = [
 ];
 
 const DropTaskState = ({ state, setState }: DropTaskStateProps) => {
+
+    const { tasks, persistTasks } = useAppData();
+
+
   return (
     <div className="dropdown-wrapper">
       <Listbox
         value={state.status}
-        onChange={(status) =>
-          setState({ ...state, status: status as Task['status'] })
-        }
+        onChange={(status) => {
+        const updatedTask = { ...state, status: status as Task['status'], updatedAt: new Date().toISOString() };
+
+        const updatedTasks = tasks.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task
+        );
+
+  persistTasks(updatedTasks);       
+  setState(updatedTask);         
+  
+}}
+
       >
         <ListboxButton className={`card-status card-status--${state.status}`}>
           {statusoptions.find((opt) => opt.value === state.status)?.label ??

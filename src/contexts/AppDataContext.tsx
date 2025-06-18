@@ -14,6 +14,9 @@ interface AppDataContextType {
   tasks: Task[];
   users: User[];
   setTasks: Dispatch<SetStateAction<Task[]>>
+    persistTasks: (tasks: Task[]) => void; 
+
+  
 
 }
 
@@ -27,6 +30,8 @@ const AppDataContext = createContext<AppDataContextType>({
   tasks: [],
   users: [],
   setTasks: () => {}, 
+  persistTasks: () => {}, 
+
   
 });
 
@@ -36,6 +41,12 @@ export function AppDataProvider({ children }:AppDataProviderProps) {
  const [projects, setProjects] = useState<Project[]>([]);
 const [tasks, setTasks] = useState<Task[]>([]);
 const [users, setUsers] = useState<User[]>([]);
+
+const persistTasks = (tasks: Task[]) => {
+  setTasks(tasks);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
 
 
   useEffect(()=>{
@@ -62,7 +73,7 @@ const [users, setUsers] = useState<User[]>([]);
   }, [])
 
   return (
-    <AppDataContext.Provider value={{ projects, tasks, users, setTasks}}> 
+    <AppDataContext.Provider value={{ projects, tasks, users, setTasks, persistTasks }}> 
       {children}
     </AppDataContext.Provider>
   );

@@ -45,3 +45,18 @@
     }
 
 }
+
+
+.trash-icon{
+
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    &:hover {
+        transform: scale(1.1);
+        color: gray;
+    }
+
+
+}

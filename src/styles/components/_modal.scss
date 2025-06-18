@@ -562,3 +562,192 @@
     margin: 0;
   }
 }
+
+.dialog {
+  position: relative;
+  z-index: 50;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  animation: backdropFadeIn 0.3s ease-out;
+}
+
+.dialog-container {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  width: 100vw;
+  overflow-y: auto;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.dialog-panel {
+  position: relative;
+  transform: scale(1);
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 28rem;
+  animation: dialogSlideIn 0.3s ease-out;
+}
+
+.dialog-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  background-color: #fef2f2;
+  border-radius: 50%;
+}
+
+.dialog-icon-svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #dc2626;
+}
+
+.dialog-content {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.dialog-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.dialog-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  p {
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.dialog-task-name {
+  font-weight: 600;
+  color: #374151;
+  font-style: italic;
+  margin: 0.75rem 0;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.dialog-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  min-width: 5rem;
+
+  &:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  &--cancel {
+    background-color: white;
+    color: #374151;
+    border-color: #d1d5db;
+
+    &:hover {
+      background-color: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    &:focus {
+      ring: 2px solid #3b82f6;
+      ring-offset: 2px;
+    }
+  }
+
+  &--delete {
+    background-color: #dc2626;
+    color: white;
+
+    &:hover {
+      background-color: #b91c1c;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+    }
+
+    &:focus {
+      ring: 2px solid #dc2626;
+      ring-offset: 2px;
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(220, 38, 38, 0.4);
+    }
+  }
+}
+
+// Animations
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialogSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .dialog-container {
+    padding: 0.5rem;
+  }
+
+  .dialog-panel {
+    padding: 1.25rem;
+    margin: 0.5rem;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+
+    .dialog-button {
+      width: 100%;
+    }
+  }
+}

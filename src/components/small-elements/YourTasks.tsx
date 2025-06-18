@@ -22,7 +22,17 @@ const YourTasks = ({tasks, projects, users}:YourTasksProps) => {
     const myTasks = tasks.filter(task => task.assignedTo?.includes(currentUserId));
 
   return (
-    <div>
+
+    <>
+
+    {myTasks.length === 0 &&
+      <div className="text-center text-gray-500">
+        You have no tasks assigned.
+      </div>
+    }
+
+
+      <div>
       {myTasks.map(task => {
           const project = projects.find(p => p.id === task.projectId);
           if (!project) return null;
@@ -42,6 +52,9 @@ const YourTasks = ({tasks, projects, users}:YourTasksProps) => {
         );
       })}
     </div>
+    
+    </>
+  
   )
 }
 
