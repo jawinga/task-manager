@@ -18,6 +18,7 @@ import SortDropdown from '../components/small-elements/SortDropdown';
 import DropTaskState from '../components/small-elements/DropTaskState';
 import Modal from '../components/small-elements/Modal';
 import TaskCreated from '../components/small-elements/taskCreated';
+import { TaskDetailModal } from '../components/small-elements/TaskDetailModal';
 
 interface FilterProps{
   tasks: Task[];
@@ -34,6 +35,8 @@ const [isOpen, setIsOpen] = React.useState(false);
 const [selectedUsers, setSelectedUsers] = React.useState<User[]>([]);
 const [isTaskCreatedModal, setIsTaskCreatedModal] = React.useState(false);
 const [createdTask, setCreatedTask] = React.useState<Task | null>(null);
+const [selectedTask, setSelectedTask] = React.useState<Task | null>(null);
+
 
 function closeModal() {
   setIsOpen(false);
@@ -108,7 +111,8 @@ console.log('Modal open state:', isOpen);
 
   <div className="row">
 
-<Filter tasks={visibleTasks} projects={projects} users={users} />
+  <Filter tasks={visibleTasks} projects={projects} users={users} onSelectTask={setSelectedTask}
+ />
 
 
   
@@ -125,7 +129,19 @@ console.log('Modal open state:', isOpen);
         />}
         {isTaskCreatedModal && <TaskCreated isTaskCreatedModal={isTaskCreatedModal} setIsTaskCreatedModal={setIsTaskCreatedModal} task={createdTask} ></TaskCreated>}
 
+
+      {selectedTask && (
+  <TaskDetailModal
+    task={selectedTask}
+    isOpen={true}
+    onClose={() => setSelectedTask(null)}
+  />
+)}
+
+
       </div>
+
+      
 
   );
 }

@@ -751,3 +751,407 @@
     }
   }
 }
+
+// Base modal styles (shared between delete and info modals)
+.modal-wrapper {
+  position: relative;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.4) 0%, 
+    rgba(26, 26, 46, 0.6) 50%, 
+    rgba(15, 52, 96, 0.4) 100%
+  );
+  backdrop-filter: blur(8px);
+  animation: overlayFadeIn 0.3s ease-out;
+}
+
+.modal-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+  animation: containerSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #8A2BE2, #6F02A1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #9B4DE3, #7C12B0);
+  }
+}
+
+.modal-panel {
+  width: 100%;
+  max-width: 520px;
+  min-height: min-content;
+  margin: auto 0;
+  background: linear-gradient(135deg, 
+    rgba(26, 26, 46, 0.95) 0%, 
+    rgba(22, 33, 62, 0.95) 50%, 
+    rgba(15, 52, 96, 0.95) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 8px 32px rgba(111, 2, 161, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #e5e7eb;
+  position: relative;
+  overflow: visible;
+
+  // Animated background pattern
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(111, 2, 161, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  // All content positioned relative to background
+  > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  // Wide variant for info modal
+  &--wide {
+    max-width: 720px;
+  }
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  &::before {
+    content: '📋';
+    font-size: 1.25rem;
+  }
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-button {
+  background: linear-gradient(135deg, #8A2BE2 0%, #6F02A1 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.75rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 12px rgba(138, 43, 226, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+
+  // Shine effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.7s ease-in-out;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, #9B4DE3 0%, #7C12B0 100%);
+    box-shadow: 
+      0 6px 16px rgba(138, 43, 226, 0.4),
+      0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 
+      0 2px 6px rgba(138, 43, 226, 0.2),
+      0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 
+      0 0 0 3px rgba(138, 43, 226, 0.3),
+      0 6px 16px rgba(138, 43, 226, 0.4);
+  }
+
+  // Cancel/secondary button variant
+  &--secondary {
+    background: rgba(0, 0, 0, 0.3);
+    color: #d1d5db;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+  }
+
+  // Delete button variant
+  &--danger {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+
+    &:hover {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      box-shadow: 
+        0 6px 16px rgba(220, 38, 38, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus {
+      box-shadow: 
+        0 0 0 3px rgba(220, 38, 38, 0.3),
+        0 6px 16px rgba(220, 38, 38, 0.4);
+    }
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(0, 0, 0, 0.2);
+  color: #9ca3af;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 3;
+  font-size: 1.5rem;
+  line-height: 1;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    transform: scale(1.1);
+  }
+}
+
+// Info modal specific styles
+.info-content {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
+}
+
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  color: #ffffff;
+  font-weight: 500;
+  word-break: break-word;
+  line-height: 1.4;
+
+  // Empty state styling
+  &:empty::after {
+    content: 'Not specified';
+    color: #6b7280;
+    font-style: italic;
+  }
+}
+
+// Delete modal specific styles (from previous modal)
+.dialog-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 50%;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.dialog-icon-svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #ef4444;
+}
+
+.dialog-content {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.dialog-description {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  p {
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.dialog-task-name {
+  font-weight: 600;
+  color: #ffffff;
+  font-style: italic;
+  margin: 0.75rem 0;
+  padding: 0.5rem 1rem;
+  background: rgba(138, 43, 226, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(138, 43, 226, 0.2);
+}
+
+// Animations
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes containerSlideIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .modal-container {
+    padding: 1rem;
+  }
+
+  .modal-panel {
+    padding: 1.5rem;
+
+    &--wide {
+      max-width: 100%;
+    }
+  }
+
+  .modal-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modal-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .info-content {
+    gap: 0.75rem;
+  }
+
+  .info-item {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-panel {
+    padding: 1rem;
+  }
+
+  .info-item {
+    padding: 0.625rem;
+  }
+}

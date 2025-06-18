@@ -17,12 +17,13 @@ interface TaskCardProps{
     project: Project;
     participants: User[];
     isAssignedToMe: boolean;
+    onClick?: () => void;
  
 }
 
 
 
-const TaskCard = ({task, project, participants, isAssignedToMe}:TaskCardProps) => {
+const TaskCard = ({task, project, participants, isAssignedToMe, onClick}:TaskCardProps) => {
 
   const { tasks, setTasks } = useAppData();
 
@@ -37,7 +38,7 @@ const [state, setState] = React.useState<Task>(task);
 
   
   return (
-  <div className={`task-card ${isAssignedToMe ? 'task-card--assigned' : ''}`}>
+  <div onClick={onClick} className={`task-card ${isAssignedToMe ? 'task-card--assigned' : ''}`}>
   <div className="task-card__left">
     <div className="task-card__left-content">
       <div className="task-card__left-top">
