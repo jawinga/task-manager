@@ -11,11 +11,13 @@ interface YourTasksProps {
     tasks: Task[];
     projects: Project[];
     users: User[];
+    onSelectTask: (task: Task) => void;
+
 
 }
 
 
-const YourTasks = ({tasks, projects, users}:YourTasksProps) => {
+const YourTasks = ({tasks, projects, users, onSelectTask}:YourTasksProps) => {
 
     const { currentUserId } = useUser();
 
@@ -48,6 +50,7 @@ const YourTasks = ({tasks, projects, users}:YourTasksProps) => {
             project={project}
             participants={participants}
             isAssignedToMe={true}
+            onClick={() => onSelectTask(task)}
           />
         );
       })}

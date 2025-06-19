@@ -6,6 +6,9 @@ import {
   DialogTitle,
   DialogBackdrop,
 } from '@headlessui/react';
+import { PenLine } from 'lucide-react';
+import { useUser } from '../../contexts/UserContext';
+
 
 interface TaskDetailModalProps {
   task: Task;
@@ -14,6 +17,12 @@ interface TaskDetailModalProps {
 }
 
 export const TaskDetailModal = ({ task, onClose, isOpen }: TaskDetailModalProps) => {
+
+  const { currentUserId } = useUser();
+
+  const [editing, setEditing] = React.useState(false);
+  const [formState, setFormState] = React.useState<Task>(task);
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="modal-wrapper">
       <DialogBackdrop className="modal-overlay" />
@@ -29,28 +38,78 @@ export const TaskDetailModal = ({ task, onClose, isOpen }: TaskDetailModalProps)
           </button>
 
           <DialogTitle className="modal-title">
-            {task.title}
+            {task.title}{task.assignedTo?.some((userId) => userId === currentUserId) ? <button onClick={()=>setEditing(prev=>!prev)}><PenLine></PenLine></button>: ''}
           </DialogTitle>
 
           <div className="info-content space-y-2">
-            <div className="info-item">
+            
+          <div className="info-item">
               <span className="info-label">Description:</span>
-              <span className="info-value">{task.description || 'Not specified'}</span>
+
+              {editing ? (
+
+                <textarea
+                  className="info-textarea"
+                  value={formState.description || ''}
+                  onChange={(e) =>
+                    setFormState({ ...formState, description: e.target.value })
+                  }
+                />
+
+              ): (
+                <span className="info-value">{task.description || 'Not specified'}</span>)}
+        
             </div>
 
             <div className="info-item">
               <span className="info-label">Status:</span>
-              <span className="info-value">{task.status}</span>
+
+              {editing?(
+
+                <select
+                value={formState.status} onChange={(e)=>setFormState({...formState, status:e.target.value as Task['status']})} >
+                <option value="not-started">Not Started</option>
+                <option value="in-progress">In Progress</option> 
+                <option value="completed">Completed</option>
+                <option value="stuck">Stuck</option>
+              
+                </select>
+
+
+              ):(<span className="info-value">{task.status}</span>)}
             </div>
 
             <div className="info-item">
               <span className="info-label">Due Date:</span>
-              <span className="info-value">{task.dueDate || 'Not set'}</span>
+              {editing?(
+                <input
+                  type="date"
+                  className="info-input"
+                  value={task.dueDate || ''}
+                  onChange={(e) =>
+                    setFormState({ ...formState, dueDate: e.target.value })
+                  }
+                />
+            ):( <span className="info-value">{task.dueDate || 'Not set'}</span>)}
             </div>
 
             <div className="info-item">
               <span className="info-label">Priority:</span>
-              <span className="info-value">{task.priority}</span>
+              {editing? (
+
+                  <select value={formState.priority}onChange={(e)=>setFormState({...formState, priority: e.target.value as Task['priority']})}>
+
+                <option value="low">Low</option>
+                <option value="medium">Medium</option> 
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+                <option value="urgent">Urgent</option>
+                <option value="stuck">Stuck</option>
+      
+
+                  </select>
+               
+              ):(<span className="info-value">{task.priority}</span>)}
             </div>
 
             <div className="info-item">
@@ -71,14 +130,14 @@ export const TaskDetailModal = ({ task, onClose, isOpen }: TaskDetailModalProps)
             <div className="info-item">
               <span className="info-label">Created At:</span>
               <span className="info-value">
-                {new Date(task.createdAt).toLocaleString()}
+                {task.createdAt? new Date(task.createdAt).toLocaleString(): null}
               </span>
             </div>
 
             <div className="info-item">
               <span className="info-label">Updated At:</span>
               <span className="info-value">
-                {new Date(task.updatedAt).toLocaleString()}
+                {task.updatedAt? new Date(task.updatedAt).toLocaleString(): null}
               </span>
             </div>
 

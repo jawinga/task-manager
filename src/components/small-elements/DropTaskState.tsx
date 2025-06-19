@@ -26,8 +26,9 @@ const DropTaskState = ({ state, setState }: DropTaskStateProps) => {
 
 
   return (
-    <div className="dropdown-wrapper">
+    <div className="dropdown-wrapper" onClick={(e) => e.stopPropagation()}>
       <Listbox
+
         value={state.status}
         onChange={(status) => {
         const updatedTask = { ...state, status: status as Task['status'], updatedAt: new Date().toISOString() };

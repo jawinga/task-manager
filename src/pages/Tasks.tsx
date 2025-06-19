@@ -97,7 +97,7 @@ console.log('Modal open state:', isOpen);
       <h3 className="silver-gradient">Your active tasks</h3>
       <br></br>
 
-      <YourTasks tasks={tasks} projects={projects} users={users} />
+      <YourTasks tasks={tasks} projects={projects} users={users} onSelectTask={setSelectedTask} />
 
       <br></br>
       <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '1rem' }}>
@@ -131,12 +131,12 @@ console.log('Modal open state:', isOpen);
 
 
       {selectedTask && (
-  <TaskDetailModal
-    task={selectedTask}
-    isOpen={true}
-    onClose={() => setSelectedTask(null)}
-  />
-)}
+         <TaskDetailModal
+            task={selectedTask}
+            isOpen={true}
+            onClose={() => setSelectedTask(null)}
+      />
+      )}
 
 
       </div>

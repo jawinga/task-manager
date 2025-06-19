@@ -14,14 +14,12 @@ interface AppDataContextType {
   tasks: Task[];
   users: User[];
   setTasks: Dispatch<SetStateAction<Task[]>>
-    persistTasks: (tasks: Task[]) => void; 
+    persistTasks: (tasks: Task[]) => void;  
 
-  
-
-}
+  }
 
 
-interface AppDataProviderProps {
+  interface AppDataProviderProps {
   children: ReactNode;
 }
 

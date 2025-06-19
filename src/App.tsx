@@ -21,7 +21,6 @@ function App() {
   return (
     <div> 
 
-
           <Navbar />
 
       <div className='layout'>
@@ -84,17 +83,7 @@ function App() {
         </div>
 
 
-
-
-
-
-          </div>
-
-            
-   
-
-     
-          
+          </div>     
           
           </div>
 
