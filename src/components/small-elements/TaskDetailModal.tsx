@@ -8,6 +8,7 @@ import {
 } from '@headlessui/react';
 import { PenLine } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
+import { AppDataProvider, useAppData } from '../../contexts/AppDataContext';
 
 
 interface TaskDetailModalProps {
@@ -17,6 +18,8 @@ interface TaskDetailModalProps {
 }
 
 export const TaskDetailModal = ({ task, onClose, isOpen }: TaskDetailModalProps) => {
+
+  const {tasks, persistTasks } = useAppData();
 
   const { currentUserId } = useUser();
 
@@ -38,7 +41,9 @@ export const TaskDetailModal = ({ task, onClose, isOpen }: TaskDetailModalProps)
           </button>
 
           <DialogTitle className="modal-title">
-            {task.title}{task.assignedTo?.some((userId) => userId === currentUserId) ? <button onClick={()=>setEditing(prev=>!prev)}><PenLine></PenLine></button>: ''}
+            {editing? (<input type="text" className="info-textarea" value={formState.title ||''} onChange={(e)=>setFormState({...formState, title: e.target.value})}></input>):(  task.title || 'Untitled Task'
+        )}
+            {task.assignedTo?.some((userId) => userId === currentUserId) ? <button onClick={()=>setEditing(prev=>!prev)} className='edit-btn'><PenLine></PenLine></button>: ''}
           </DialogTitle>
 
           <div className="info-content space-y-2">
@@ -152,14 +157,32 @@ export const TaskDetailModal = ({ task, onClose, isOpen }: TaskDetailModalProps)
           </div>
 
           <div className="modal-actions mt-4">
-            <button
-              type="button"
-              className="modal-button"
-              onClick={onClose}
-            >
-              Close
-            </button>
-          </div>
+  {editing ? (
+    <>
+      <button onClick={() => setEditing(prev => !prev)}>Cancel</button>
+      <button
+        type="button"
+        className="modal-button"
+        onClick={() => {
+          persistTasks(tasks.map(t => t.id === task.id ? formState : t));
+          setEditing(false);
+          onClose();
+        }}
+      >
+        Save and Close
+      </button>
+    </>
+  ) : (
+    <button
+      type="button"
+      className="modal-button"
+      onClick={onClose}
+    >
+      Close
+    </button>
+  )}
+</div>
+
         </DialogPanel>
       </div>
     </Dialog>

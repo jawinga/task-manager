@@ -60,3 +60,18 @@
 
 
 }
+
+.edit-btn{
+
+    border-radius: 50%;
+    height: auto;
+    width: 45px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    &:hover {
+        transform: scale(1.1);
+        color: gray;
+    }
+    background-color: rgb(122, 12, 201);
+
+}
